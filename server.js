@@ -4,6 +4,7 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 import dbConfig from "./config/mongodb.config.db.js";
 import apiRouter from "./routes/index.routes.js";
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 const app = exp();
 
@@ -20,6 +21,9 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", apiRouter);
+
+app.use(notFound);
+app.use(errorHandler);
 
 const Server = () => {
   app.listen(PORT, (err) => {
