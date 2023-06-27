@@ -33,12 +33,13 @@ export const getOne = async (req, res) => {
 };
 
 export const updateData = async (req, res) => {
-  res.json({ message: "Update" });
+  res.json({ message: "Update" }).status(200);
 };
 
 export const deleteOne = async (req, res) => {
   let dataId = req.params.id;
+
   await DataModel.findOneAndDelete(dataId)
-    .then((data) => res.json(data))
+    .then((data) => res.json(data).status(201))
     .catch((err) => console.log(err));
 };
