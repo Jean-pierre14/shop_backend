@@ -19,7 +19,7 @@ export const createData = async (req, res) => {
 export const getAll = async (req, res) => {
   try {
     const data = await DataModel.find({});
-    res.json(data);
+    res.json(data).status(201);
   } catch (err) {
     console.log(`Error: ${err.message}`);
   }
