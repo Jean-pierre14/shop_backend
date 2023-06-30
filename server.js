@@ -1,6 +1,7 @@
 import exp from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import * as dotenv from "dotenv";
 import dbConfig from "./config/mongodb.config.db.js";
 import apiRouter from "./routes/index.routes.js";
@@ -14,6 +15,7 @@ dotenv.config({ path: ".env" });
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

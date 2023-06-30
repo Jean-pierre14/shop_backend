@@ -1,11 +1,50 @@
 import User from "../models/User.model.js";
+import Joi from "joi";
+import jwt from "jsonwebtoken";
+
+// Joi validation schema for user creation
+export const createUserSchema = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+});
+
+// Middleware to validate request body
+export const validateRequestBody = (schema) => {
+  return (req, res, next) => {
+    const { error } = schema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+    next();
+  };
+};
 
 // Create a new user
 export const createUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
+
+    // Validate the request body
+    const { error } = createUserSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+
+    // Check if the user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ error: "User already exists" });
+    }
+
+    // Create a new user
     const user = new User({ name, email, password });
     await user.save();
+
+    // Generate a token
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+
+    res.status(201).json({ user, token });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
