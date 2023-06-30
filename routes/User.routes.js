@@ -5,6 +5,7 @@ import {
   getUserById,
   getUsers,
   updateUser,
+  logoutUser,
   createUserSchema,
   validateRequestBody,
 } from "../controllers/User.controller.js";
@@ -14,8 +15,10 @@ const router = exp.Router();
 
 router
   .route("/")
-  .get(verifyToken, getUsers)
+  .get(getUsers)
   .post(validateRequestBody(createUserSchema), createUser);
+
+router.post("/logout", logoutUser);
 
 router
   .route("/:id")

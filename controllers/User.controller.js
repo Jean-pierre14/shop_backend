@@ -44,7 +44,10 @@ export const createUser = async (req, res) => {
     // Generate a token
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
 
-    res.status(201).json({ user, token });
+    // Set token as a cookie
+    res.cookie("token", token, { httpOnly: true });
+
+    res.status(201).json({ user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -53,8 +56,21 @@ export const createUser = async (req, res) => {
 // Get all users
 export const getUsers = async (req, res) => {
   try {
-    const users = await User.find();
-    res.json(users);
+    const token = req.cookies.token;
+
+    if (!token) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ error: "Invalid token" });
+      }
+
+      const users = await User.find();
+
+      res.json(users).status(200);
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -121,4 +137,10 @@ export const login = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+};
+
+// Logout
+export const logoutUser = async (req, res) => {
+  res.clearCookie("token");
+  res.json({ message: "Logged out successfully" }).status(200);
 };
