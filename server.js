@@ -4,6 +4,7 @@ import cors from "cors";
 import * as dotenv from "dotenv";
 import dbConfig from "./config/mongodb.config.db.js";
 import apiRouter from "./routes/index.routes.js";
+import UserRouter from "./routes/User.routes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 
 const app = exp();
@@ -20,6 +21,7 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to api Racine molato" }).status(200);
 });
 
+app.use("/user", UserRouter);
 app.use("/api", apiRouter);
 
 app.use(notFound);
