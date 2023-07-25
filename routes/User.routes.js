@@ -8,6 +8,7 @@ import {
   logoutUser,
   createUserSchema,
   validateRequestBody,
+  login,
 } from "../controllers/User.controller.js";
 import { verifyToken } from "../middleware/jwtMiddleware.js";
 
@@ -17,6 +18,8 @@ router
   .route("/")
   .get(getUsers)
   .post(validateRequestBody(createUserSchema), createUser);
+
+router.post("/login", login);
 
 router.post("/logout", logoutUser);
 

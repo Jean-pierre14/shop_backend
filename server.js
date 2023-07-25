@@ -30,6 +30,7 @@ app.use("/user", UserRouter);
 app.use("/api", apiRouter);
 
 app.use(notFound);
+
 app.use(errorHandler);
 
 const Server = () => {
